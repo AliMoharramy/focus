@@ -1,4 +1,39 @@
+"use client";
+
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { useContext, useState } from "react";
+import { ToastContext } from "../components/toast";
+import Loading from "../components/Loading";
+
+
+
 export default function Login() {
+  const [isLoading, setIsLoading] = useState(false);
+  const toast = useContext(ToastContext);
+  async function submit(e:any){
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    try {
+      const response = await axios.post("/api/login", formData);
+      const data = response.data;
+  
+      if (data && data.hash) {
+        const expirationDate = new Date();
+        expirationDate.setMonth(expirationDate.getMonth() + 3);
+        document.cookie = `accessCookie=${data.hash}; expires=${expirationDate.toUTCString()}; path=/`;
+        toast.success("logged in :)");
+        setIsLoading(false);
+      } else {
+        toast.error("Incorrect username or password.");
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.error("Error logging in: ", error);
+      setIsLoading(false);
+    }
+  }
+  const router = useRouter();
   return (
     <main className=" bg-[#F6F6F6] animate-fade">
       <div className="h-dvh w-[85%] xl:w-full xl:max-w-[25rem] mx-auto py-10 relative">
@@ -6,7 +41,8 @@ export default function Login() {
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 320 512"
-            className="w-10 bg-[#EEEEEE] p-2.5 px-3.5 rounded-lg"
+            className="w-10 bg-[#EEEEEE] p-2.5 px-3.5 rounded-lg cursor-pointer"
+            onClick={() => router.push("/")}
           >
             <path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
           </svg>
@@ -18,10 +54,11 @@ export default function Login() {
             and manage your bookings easily.
           </p>
         </div>
-        <form className="font-sans flex flex-col gap-5 mt-10">
+        <form className="font-sans flex flex-col gap-5 mt-10" onSubmit={(e:any)=> {setIsLoading(true);submit(e)}}>
           <div className="relative w-full">
             <input
-              type="email"
+              type="text"
+              name="username"
               className="border-2 p-3 placeholder:text-[0.75rem]  text-sm font-bold placeholder:font-bold border-black border-opacity-50 w-full rounded-xl focus:outline-none relative z-10 bg-white"
               placeholder="username | @brucewayne23"
             />
@@ -30,6 +67,7 @@ export default function Login() {
           <div className="relative w-full">
             <input
               type="password"
+              name="password"
               className="border-2 p-3 placeholder:text-[0.75rem]  text-sm font-bold placeholder:font-bold border-black border-opacity-50 w-full rounded-xl focus:outline-none relative z-10 bg-white"
               placeholder="password"
             />
@@ -39,7 +77,7 @@ export default function Login() {
             type="submit"
             className="bg-[#F26E56] text-[#F6F6F6] rounded-xl p-3.5 font-bold mt-10"
           >
-            Login
+            {isLoading ? <Loading style="w-[20px]" color="#FFF"/> :"Login"}
           </button>
         </form>
         <div className="flex items-center justify-center space-x-2 mt-6">

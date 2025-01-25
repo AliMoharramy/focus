@@ -13,14 +13,18 @@ const conn = postgres({
 });
 
 export function hashPass(password) {
-  return bcrypt.hash(password, 10).then(function(hash){return hash});
+  return bcrypt.hash(password, 10).then(function (hash) {
+    return hash;
+  });
 }
 export function comparePass(password, hash) {
-  return bcrypt.compare(password, hash).then(function(result){return result});
+  return bcrypt.compare(password, hash).then(function (result) {
+    return result;
+  });
 }
 export function checkusername(username) {
-  const invalidPattern = /^[^\s\d][^\s]*$/;
-  if (!invalidPattern.test(username)) return [];
+  const invalidPattern = /^[^\s\d](?!.*\s)[^\s]*.{2,}$/;
+  if (!invalidPattern.test(username)) return [""];
   const userName = username.split("")[0] === "@" ? username.slice(1) : username;
   return conn`
     SELECT 1
@@ -33,5 +37,10 @@ export function signupUser(name, username, email, password_hash) {
   return conn`
     INSERT INTO users (name, username, email, password_hash)
     VALUES (${name}, ${username}, ${email}, ${password_hash});
+  `;
+}
+export function findLoginUser(username) {
+  return conn`
+    SELECT id, password_hash FROM users WHERE username = ${username};
   `;
 }
