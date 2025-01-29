@@ -6,18 +6,16 @@ import { useContext, useState } from "react";
 import { ToastContext } from "../components/toast";
 import Loading from "../components/Loading";
 
-
-
 export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const toast = useContext(ToastContext);
-  async function submit(e:any){
+  async function submit(e: any) {
     e.preventDefault();
     const formData = new FormData(e.target);
     try {
       const response = await axios.post("/api/login", formData);
       const data = response.data;
-  
+
       if (data && data.hash) {
         const expirationDate = new Date();
         expirationDate.setMonth(expirationDate.getMonth() + 3);
@@ -48,13 +46,19 @@ export default function Login() {
           </svg>
         </div>
         <div className="my-6">
-          <h3 className={`font-bold text-2xl `}>Welcome Back! 👋</h3>
+          <h3 className={`font-bold text-2xl`}>Welcome Back! 👋</h3>
           <p className="opacity-40 text-[0.7rem] mt-4 font-sans font-bold">
             Log in to your Streamline account to access all your services <br />{" "}
             and manage your bookings easily.
           </p>
         </div>
-        <form className="font-sans flex flex-col gap-5 mt-10" onSubmit={(e:any)=> {setIsLoading(true);submit(e)}}>
+        <form
+          className="font-sans flex flex-col gap-5 mt-10"
+          onSubmit={(e: any) => {
+            setIsLoading(true);
+            submit(e);
+          }}
+        >
           <div className="relative w-full">
             <input
               type="text"
@@ -77,7 +81,7 @@ export default function Login() {
             type="submit"
             className="bg-[#F26E56] text-[#F6F6F6] rounded-xl p-3.5 font-bold mt-10"
           >
-            {isLoading ? <Loading style="w-[20px]" color="#FFF"/> :"Login"}
+            {isLoading ? <Loading style="w-[20px]" color="#FFF" /> : "Login"}
           </button>
         </form>
         <div className="flex items-center justify-center space-x-2 mt-6">

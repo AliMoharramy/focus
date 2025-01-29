@@ -46,9 +46,9 @@ export default function SignUp() {
           toast.success("Account created successfully");
           setIsloading(false);
           setGoLogin(true);
-          setTimeout(()=>{
+          setTimeout(() => {
             router.push("/login");
-          },1000)
+          }, 1000);
         }
       });
     }

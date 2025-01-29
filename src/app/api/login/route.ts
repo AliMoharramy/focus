@@ -7,13 +7,17 @@ export async function POST(req: any) {
   const hashedPass = await hashPass(formData.get("password").toString());
 
   try {
-    const data = await findLoginUser(
-      formData.get("username"),
-    );
-    if(data[0] && data[0].password_hash){
-        const checkPass = await comparePass(formData.get("password"),data[0].password_hash);
-        if(checkPass){const jwtToken = await createJWT(data[0].id); return NextResponse.json({hash:jwtToken})};
-        return NextResponse.json(checkPass);
+    const data = await findLoginUser(formData.get("username"));
+    if (data[0] && data[0].password_hash) {
+      const checkPass = await comparePass(
+        formData.get("password"),
+        data[0].password_hash,
+      );
+      if (checkPass) {
+        const jwtToken = await createJWT(data[0].id);
+        return NextResponse.json({ hash: jwtToken });
+      }
+      return NextResponse.json(checkPass);
     }
     return NextResponse.json(data);
   } catch (error: any) {
