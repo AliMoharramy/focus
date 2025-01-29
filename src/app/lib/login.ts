@@ -1,4 +1,4 @@
-'use server'
+"use server";
 import * as jose from "jose";
 import fs from "fs";
 var privateKey = fs.readFileSync("privateKey.pem");
@@ -15,13 +15,13 @@ export async function createJWT(id: number) {
     .setAudience("")
     .setExpirationTime(expirationDate)
     .sign(privateKey);
-    return jwt;
+  return jwt;
 }
 
 export async function verifyJWT(jwt: string) {
   const { payload, protectedHeader } = await jose.jwtVerify(jwt, privateKey, {
-    issuer:"",
-    audience:"",
+    issuer: "",
+    audience: "",
   });
   return payload;
 }

@@ -1,11 +1,17 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Rubik_Spray_Paint } from "next/font/google";
 import "./globals.css";
 import { useContext } from "react";
 import ToastProvider from "./components/toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const rubikSpray = Rubik_Spray_Paint({
+  weight: "400",
+  variable: "--font-rubic-paint",
   subsets: ["latin"],
 });
 
@@ -27,7 +33,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${rubikSpray.variable} antialiased`}
       >
         <ToastProvider>{children}</ToastProvider>
       </body>
